@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Delay Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>✈️ Flight Delay Predictor</h1>
+        <p>Check if your flight might be delayed due to weather!</p>
+        
+                <header class="hero">
+                    <div class="hero-content">
+                        <h1>✈️ Flight Delay Predictor</h1>
+                        <p class="hero-sub">Quick weather-based delay estimates so you can plan ahead.</p>
+                    </div>
+                    <div class="hero-visual" aria-hidden="true"> 
+                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 12l20-8-4 20-8-6-8-6z" fill="#2c5aa0" opacity="0.9"/>
+                        </svg>
+                    </div>
+                </header>
+            <select id="airport">
+                <option value="">Choose an airport...</option>
+                <option value="JFK">JFK - New York</option>
+                <option value="LAX">LAX - Los Angeles</option>
+                <option value="ORD">ORD - Chicago</option>
+                <option value="ATL">ATL - Atlanta</option>
+                <option value="DFW">DFW - Dallas</option>
+                <option value="DEN">DEN - Denver</option>
+                <option value="SFO">SFO - San Francisco</option>
+                <option value="SEA">SEA - Seattle</option>
+                <option value="MIA">MIA - Miami</option>
+                <option value="BOS">BOS - Boston</option>
+            </select>
+            
+            
+            <button id="checkWeather" onclick="checkFlightDelay()">Check Delay Risk</button>
+        </div>
+
+        <div class="input-section" style="margin-top:10px;">
+            <label for="apiKeyInput">OpenWeather API key (optional)</label>
+            <input id="apiKeyInput" type="password" placeholder="Paste API key here" style="width:100%; padding:8px; margin-top:6px;" />
+            <div style="margin-top:8px; display:flex; gap:8px; align-items:center; justify-content:space-between;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <button id="manageApiBtn" class="btn-ghost" type="button">Manage API key</button>
+                    <span id="apiKeyStatus" style="margin-left:8px;color:#666; font-size:14px"></span>
+                </div>
+                <div id="apiAdvanced" class="advanced-controls" aria-hidden="true">
+                    <label style="font-weight:normal; display:flex; align-items:center; gap:6px;">
+                        <input id="saveApiKey" type="checkbox"> Save key (opt-in)
+                        <span class="tooltip-wrapper" tabindex="0" aria-label="API key save info">ℹ️
+                            <span class="tooltip-text">If checked, your API key is stored locally in your browser. Do not save on shared machines.</span>
+                        </span>
+                    </label>
+                    <button id="saveKeyBtn" type="button">Save</button>
+                    <button id="validateKeyBtn" type="button">Validate key</button>
+                    <button id="clearKeyBtn" type="button">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flight schedules integration -->
+        <div class="input-section" style="margin-top:6px;">
+            <label for="flightApiProvider">Flight schedules provider</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <select id="flightApiProvider" style="padding:8px 10px; border-radius:8px;">
+                    <option value="opensky">OpenSky (no key)</option>
+                    <option value="aviationstack">AviationStack (API key)</option>
+                </select>
+                <select id="flightScheduleType" style="padding:8px 10px; border-radius:8px;">
+                    <option value="arrival">Arrivals</option>
+                    <option value="departure">Departures</option>
+                </select>
+                <button id="showSchedulesBtn" type="button">Show Schedules</button>
+            </div>
+
+            <label for="flightApiKeyInput" style="margin-top:10px; display:block;">Flight API key (optional)</label>
+            <input id="flightApiKeyInput" type="password" placeholder="Paste flight API key (for AviationStack)" style="width:100%; padding:8px; margin-top:6px;" />
+            <div style="margin-top:8px; display:flex; gap:8px; align-items:center; justify-content:space-between;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <button id="manageFlightBtn" class="btn-ghost" type="button">Manage flight key</button>
+                    <span id="flightApiKeyStatus" style="margin-left:8px;color:#666; font-size:14px"></span>
+                </div>
+                <div id="flightAdvanced" class="advanced-controls" aria-hidden="true">
+                    <label style="font-weight:normal; display:flex; align-items:center; gap:6px;">
+                        <input id="saveFlightApiKey" type="checkbox"> Save flight key (opt-in)
+                        <span class="tooltip-wrapper" tabindex="0" aria-label="flight api key save info">ℹ️
+                            <span class="tooltip-text">If checked, your flight API key is stored locally in your browser. Do not save on shared machines.</span>
+                        </span>
+                    </label>
+                    <button id="saveFlightKeyBtn" type="button">Save</button>
+                    <button id="validateFlightKeyBtn" type="button">Validate key</button>
+                    <button id="clearFlightKeyBtn" type="button">Clear</button>
+                </div>
+            </div>
+        </div>
+        <div class="note" style="margin-top:8px; font-size:14px;">
+            <strong>Note:</strong> The app includes a built-in API key so you can try the app immediately. If you prefer, paste your own OpenWeather API key above, click <em>Validate key</em>, and optionally check <em>Save key (opt-in)</em> to keep it in this browser only. Do not save keys on shared/public computers.
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <p>Checking weather conditions...</p>
+        </div>
+        
+        <div id="results" class="results" style="display: none;">
+            <h2>Weather Report</h2>
+            <div id="weatherInfo"></div>
+            
+                    <div id="riskMeter" class="risk-meter" aria-hidden="true">
+                        <svg id="riskGauge" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Delay risk gauge">
+                            <defs>
+                                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#34d399" />
+                                    <stop offset="50%" stop-color="#f59e0b" />
+                                    <stop offset="100%" stop-color="#ef4444" />
+                                </linearGradient>
+                            </defs>
+                            <!-- background track -->
+                            <circle cx="60" cy="60" r="44" class="gauge-track" stroke-width="12" fill="none" />
+                            <!-- animated progress -->
+                            <circle id="gaugeProgress" cx="60" cy="60" r="44" class="gauge-progress" stroke-width="12" fill="none" stroke-linecap="round" transform="rotate(-90 60 60)" />
+                            <text id="gaugeLabel" x="60" y="66" text-anchor="middle" class="gauge-label">0%</text>
+                        </svg>
+                    </div>
+                    <div id="lastUpdated" class="last-updated" aria-live="polite"></div>
+            <div id="delayPrediction"></div>
+        </div>
+        
+        <div class="info-section">
+            <h3>How it works:</h3>
+            <ul>
+                <li>Gets current weather data for the airport</li>
+                <li>Checks for bad weather conditions</li>
+                <li>Predicts delay probability based on weather</li>
+                <li>Simple rules: rain/snow/wind = higher delay chance</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Onboarding / quick-start modal -->
+    <div id="onboardModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <h2>Quick start</h2>
+            <p>To try the app quickly you can either use the built-in convenience keys or paste your own keys. Keys saved here are stored only in your browser.</p>
+            <div style="margin-top:12px;">
+                <label>OpenWeather key (optional)</label>
+                <input id="onboardOwKey" type="password" placeholder="Paste OpenWeather key" />
+            </div>
+            <div style="margin-top:8px;">
+                <label>Flight API key (optional)</label>
+                <input id="onboardFlightKey" type="password" placeholder="Paste AviationStack key" />
+            </div>
+            <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+                <button id="useBuiltInBtn" type="button">Use built-in keys</button>
+                <button id="applyOnboardBtn" type="button">Apply</button>
+            </div>
+            <div style="margin-top:10px; font-size:13px; color:var(--muted);">Tip: you can also pass keys in the URL as <code>?ow_key=...&flight_key=...</code></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <footer class="site-footer">
+        Made by Anushree Sabade (2025)
+    </footer>
+</body>
+</html>
