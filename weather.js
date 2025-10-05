@@ -1,5 +1,4 @@
-// Vercel serverless function (Node.js) - proxy to OpenWeather
-// Save your OpenWeather API key as an environment variable named OPENWEATHER_KEY in Vercel
+// Save OpenWeather API key as an environment variable named OPENWEATHER_KEY in Vercel
 
 export default async function handler(req, res) {
   const key = process.env.OPENWEATHER_KEY;
