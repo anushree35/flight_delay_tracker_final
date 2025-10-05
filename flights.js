@@ -1,5 +1,3 @@
-// Vercel serverless function to proxy flight schedules (AviationStack) or fallback to OpenSky
-// Save AVIATIONSTACK_KEY as env var if you want to call AviationStack
 
 export default async function handler(req, res) {
   const aviationKey = process.env.AVIATIONSTACK_KEY;
