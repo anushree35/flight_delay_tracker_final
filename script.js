@@ -1,4 +1,3 @@
-// Simple JavaScript that looks like a beginner wrote it
 // NOTE: built-in API key removed for interview/demo safety. Use the in-page input or a server-side proxy.
 let API_KEY = null; // intentionally blank — prefer in-page input or proxy env
 // Demo mode if ?demo=1 present
