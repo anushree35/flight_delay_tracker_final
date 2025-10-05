@@ -1,5 +1,3 @@
-# Simple Python script for processing weather data
-# This looks like beginner Python code
 
 import requests
 import json
