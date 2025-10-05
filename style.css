@@ -145,7 +145,7 @@ button:hover{ transform: translateY(-1px); }
 .hero-sub { margin: 4px 0 0 0; color: #445; }
 .hero-visual { opacity: 0.95; }
 
-/* Results card improvements (dark theme friendly) */
+/*dark
 .results { margin-top:20px; padding:22px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); border:1px solid rgba(255,255,255,0.03); box-shadow: 0 8px 30px rgba(2,6,23,0.55); color: var(--muted-light); transition: transform 0.18s ease, box-shadow 0.18s ease; }
 .results.show { transform: translateY(0); }
 
