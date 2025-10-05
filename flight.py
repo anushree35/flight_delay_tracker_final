@@ -1,17 +1,14 @@
-# Simple Python script for processing weather data
-# This looks like beginner Python code
+
 
 import requests
 import json
 from datetime import datetime
 
-# Simple class to handle weather data
 class WeatherProcessor:
     def __init__(self, api_key):
         self.api_key = api_key
         self.base_url = "https://api.openweathermap.org/data/2.5/weather"
     
-    # Get weather data for airport
     def get_airport_weather(self, lat, lon):
         try:
             url = f"{self.base_url}?lat={lat}&lon={lon}&appid={self.api_key}&units=imperial"
@@ -22,7 +19,6 @@ class WeatherProcessor:
             print(f"Error getting weather data: {e}")
             return None
     
-    # Simple delay calculation (basic logic)
     def calculate_delay_risk(self, weather_data):
         if not weather_data:
             return {"error": "No weather data"}
@@ -30,7 +26,6 @@ class WeatherProcessor:
         risk_score = 0
         risk_factors = []
         
-        # Check temperature
         temp = weather_data['main']['temp']
         if temp < 32:
             risk_score += 30
@@ -70,7 +65,6 @@ class WeatherProcessor:
             "timestamp": datetime.now().isoformat()
         }
     
-    # Save data to file (simple file handling)
     def save_weather_data(self, airport_code, weather_data, delay_info):
         filename = f"weather_data_{airport_code}_{datetime.now().strftime('%Y%m%d')}.json"
         
@@ -88,7 +82,6 @@ class WeatherProcessor:
         except Exception as e:
             print(f"Error saving data: {e}")
 
-# Simple function to test the weather processor
 def test_weather_processor():
     # You need to get a free API key from OpenWeatherMap
     api_key = "YOUR_API_KEY_HERE"
